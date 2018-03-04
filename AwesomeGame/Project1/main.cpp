@@ -14,14 +14,20 @@ int main(int argc, char* argv[])
 	SDL_Window *window;                    // Declare a pointer
 	SDL_Surface* screenSurface = NULL;
 	SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
-		     	                       
-
+	int x = 50;
+	int y = 50;
+	SDL_Rect bullet;
+	bullet.w = 50;
+	bullet.h = 50;
+	bullet.x = 100;
+	bullet.y = 100;
 	SDL_Rect Rect;
 	Rect.w = 200;
 	Rect.h = 200;
 	Rect.x = 50;
 	Rect.y = 50;
-	
+	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+
 	// Create an application window with the following settings:
 	window = SDL_CreateWindow(
 		"Moving Square",                          // window title
@@ -56,26 +62,48 @@ int main(int argc, char* argv[])
 			{
 				run = false;
 			}
+			keystate = SDL_GetKeyboardState(NULL);
+			if (keystate[SDL_SCANCODE_LEFT]) {
+				Rect.x -= 4;
+				bullet.x -= 4;
+			}
+			if (keystate[SDL_SCANCODE_RIGHT]) {
+				Rect.x += 4;
+				bullet.x += 4;
+			}
+			if (keystate[SDL_SCANCODE_UP]) {
+				Rect.y -= 4;
+				bullet.y -= 4;
+			}
+			if (keystate[SDL_SCANCODE_DOWN]) {
+				Rect.y += 4;
+				bullet.y += 4;
+			}
+			if (keystate[SDL_SCANCODE_SPACE])
+			{
+				bullet.x += 10;
+			}
+			//Clear screen
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 0);
+			SDL_RenderClear(renderer);
+
+			//Render red filled quad
+
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
+			SDL_RenderFillRect(renderer, &Rect);
+			SDL_RenderPresent(renderer);
+
+			//Render green filled bulled
+			SDL_SetRenderDrawColor(renderer, 0, 255, 25, 0);
+			SDL_RenderFillRect(renderer, &bullet);
+			SDL_RenderPresent(renderer);
 		}
-	
-		//Clear screen
-		SDL_SetRenderDrawColor(renderer, 0, 0, 255, 0);
-		SDL_RenderClear(renderer);
-
-		//Render red filled quad
-		
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
-		SDL_RenderFillRect(renderer, &Rect);
-		SDL_RenderPresent(renderer);
-		Rect.y++;
-		Rect.x++;
-		SDL_Delay(100);
 	}
-		 // Close and destroy the window
-		SDL_DestroyWindow(window);
+	// Close and destroy the window
+	SDL_DestroyWindow(window);
 
-		// Clean up
-		SDL_Quit();
-		return 0;
-	}
+	// Clean up
+	SDL_Quit();
+	return 0;
+}
 
